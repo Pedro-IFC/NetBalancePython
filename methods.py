@@ -40,7 +40,7 @@ class Individual:
                 fitness_value = 0.0
             else:
                 fitness_value = 10.0 * n / total_abs
-        except LinAlgError:
+        except Exception as e:
             fitness_value = 0.0
         
         return fitness_value
