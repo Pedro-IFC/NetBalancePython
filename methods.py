@@ -1,7 +1,6 @@
 
 import random
 import copy
-
 from typing import List
 import numpy as np
 
@@ -28,7 +27,7 @@ class Individual:
 
     def fitness(self) -> float:
         total_fitness = 0.0
-        for _ in range(10):
+        for _ in range(int(self.n/2)):
             tester = generate_tester(self.initial_positions, self.min_matrix, self.max_matrix)
             n = self.n
             A = [[0.0] * n for _ in range(n)]
@@ -96,16 +95,36 @@ class Individual:
 
     def __str__(self) -> str:
         return f"Individual:\n{self.initial_positions}"
-def generate_tester(initial_positions: List[List[float]], min_matrix: List[List[float]], 
+
+
+def round_to_nearest_5(value: float) -> float:
+    return round(value / 10) * 10
+
+def generate_tester(initial_positions: List[List[float]],
+                    min_matrix: List[List[float]],
                     max_matrix: List[List[float]]) -> List[List[float]]:
     n = len(initial_positions)
     tester = [[0.0] * n for _ in range(n)]
+
+    value_pool = []
     for i in range(n):
-        for j in range(n):
+        for j in range(i, n):
             if max_matrix[i][j] > 0:
-                val = random.uniform(min_matrix[i][j], max_matrix[i][j])
+                min_val = round_to_nearest_5(min_matrix[i][j])
+                max_val = round_to_nearest_5(max_matrix[i][j])
+                possible_vals = list(range(int(min_val), int(max_val) + 1, 10))
+                value_pool.extend(possible_vals)
+
+    for i in range(n):
+        for j in range(i, n):
+            if max_matrix[i][j] > 0:
+                while True:
+                    val = random.choice(value_pool)
+                    if min_matrix[i][j] <= val <= max_matrix[i][j]:
+                        break
                 tester[i][j] = val
                 tester[j][i] = val
+
     return tester
 def select_parent_torneio(population: List[Individual], fitness: List[float], 
                           tournament_size: int) -> List[Individual]:
