@@ -244,7 +244,7 @@ class AGApp(tk.Tk):
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
         for gen in range(GEN):
-            fitness_list = [ind.fitness(tester) for ind in population]
+            fitness_list = [ind.fitness() for ind in population]
             idx = np.argmax(fitness_list)
             curr_fit = fitness_list[idx]
             best_candidate = population[idx]
@@ -273,7 +273,7 @@ class AGApp(tk.Tk):
             while len(new_pop) < POP_SIZE and tentativas < 10 * POP_SIZE:
                 p1, p2 = select_parent_torneio(population, fitness_list, TOURNAMENT_SIZE)
                 child = p1.cross(p2).mutate(MU_TAX)
-                if child.fitness(tester) > max(p1.fitness(tester), p2.fitness(tester)):
+                if child.fitness() > max(p1.fitness(), p2.fitness()):
                     new_pop.append(child)
                 tentativas += 1
 
@@ -282,7 +282,7 @@ class AGApp(tk.Tk):
 
             population = new_pop
 
-        info = f"Melhor Fitness: {best_individual.fitness(tester):.4f}"
+        info = f"Melhor Fitness: {best_individual.fitness():.4f}"
         ttk.Label(left, text=info).pack(pady=10)
 
         return best_individual, history

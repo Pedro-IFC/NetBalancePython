@@ -26,27 +26,24 @@ class Individual:
         return graph
 
     def fitness(self) -> float:
-        total_fitness = 0.0
-        for _ in range(int(self.n/2)):
-            tester = generate_tester(self.initial_positions, self.min_matrix, self.max_matrix)
-            n = self.n
-            A = [[0.0] * n for _ in range(n)]
-            for i in range(n):
-                for j in range(n):
-                    A[i][j] = self.initial_positions[i][j] * tester[i][j]
-            
-            try:
-                solution = np.linalg.solve(A, self.b_vector.copy())
-                total_abs = sum(abs(x) for x in solution) 
-                if total_abs == 0:
-                    fitness_value = 0.0
-                else:
-                    fitness_value = 10.0 * n / total_abs
-            except ValueError:
+        tester = generate_tester(self.initial_positions, self.min_matrix, self.max_matrix)
+        n = self.n
+        A = [[0.0] * n for _ in range(n)]
+        for i in range(n):
+            for j in range(n):
+                A[i][j] = self.initial_positions[i][j] * tester[i][j]
+        
+        try:
+            solution = np.linalg.solve(A, self.b_vector.copy())
+            total_abs = sum(abs(x) for x in solution) 
+            if total_abs == 0:
                 fitness_value = 0.0
-            
-            total_fitness += fitness_value
-        return total_fitness
+            else:
+                fitness_value = 10.0 * n / total_abs
+        except LinAlgError:
+            fitness_value = 0.0
+        
+        return fitness_value
 
 
     def mutate(self, mutation_rate: float) -> 'Individual':

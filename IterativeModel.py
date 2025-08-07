@@ -43,7 +43,7 @@ def run_ag(initial_positions: List[List[float]], min_matrix: List[List[float]],
     ax.legend()
     
     for gen in range(GEN):
-        fitness_list = [ind.fitness(tester) for ind in population]
+        fitness_list = [ind.fitness() for ind in population]
         
         current_best_idx = np.argmax(fitness_list)
         current_best = population[current_best_idx]
@@ -74,9 +74,9 @@ def run_ag(initial_positions: List[List[float]], min_matrix: List[List[float]],
             child = parents[0].cross(parents[1])
             child = child.mutate(MU_TAX)
 
-            fitness_p1 = parents[0].fitness(tester)
-            fitness_p2 = parents[1].fitness(tester)
-            fitness_child = child.fitness(tester)
+            fitness_p1 = parents[0].fitness()
+            fitness_p2 = parents[1].fitness()
+            fitness_child = child.fitness()
 
             if fitness_child > max(fitness_p1, fitness_p2):
                 new_population.append(child)
@@ -127,8 +127,8 @@ tester = [
 ]
 
 ind_initial = Individual(initial_positions, min_matrix, max_matrix, b)
-print("Fitness:", ind_initial.fitness(tester))
+print("Fitness:", ind_initial.fitness())
 
 best, history_simple = run_ag(initial_positions, min_matrix, max_matrix, b)
 print("Melhor indivíduo encontrado:", best)
-print("Fitness do melhor indivíduo:", best.fitness(tester))
+print("Fitness do melhor indivíduo:", best.fitness())
